@@ -1,11 +1,10 @@
 import os
 import pandas as pd
-from ..config import base_path
+from ..config import vconf
 
 DEFAULT_API_URL = "https://api.census.gov/data/"
 KEY_ENV_NAME = "USCENSUS_API_KEY"
-KEY_FILE_NAME = os.path.join(base_path, ".uscensusdatarc")
-DATA_DIR = os.path.join(base_path, "uscensus", "data")
+DATA_DIR = os.path.join(vconf.get("PATHS", "data"), "uscensus")
 
 cbp_industry_var = {
     1986: "SIC",
@@ -90,6 +89,36 @@ def naics2002_to_sics(start):
     subsets = df[df["2002 NAICS"].astype(str).str.startswith(start)]
     return subsets["SIC"].dropna().astype(int).unique()
 
+
+def update_naics_crosswalk():
+    url = "https://www.census.gov/eos/www/naics/concordances"
+    url += "/{}_to_{}_NAICS.xlsx"
+    df = pd.read_excel(
+        url.format(2017, 2012),
+        skiprows=2,
+        usecols=[0, 2],
+        names=["NAICS2017", "NAICS2012"],
+    ).merge(pd.read_excel(
+        url.format(2012, 2007)[:-1],
+        skiprows=2,
+        usecols=[0, 2],
+        names=["NAICS2012", "NAICS2007"],
+    )).merge(pd.read_excel(
+        url.format(2007, 2002)[:-1],
+        skiprows=2,
+        usecols=[0, 2],
+        names=["NAICS2007", "NAICS2002"],
+    ))
+    df.to_csv(os.path.join(DATA_DIR, "naics_crosswalk.csv"))
+    return df
+
+
+def get_naics_crosswalk():
+    path = os.path.join(DATA_DIR, "naics_crosswalk.csv")
+    if os.path.isfile(path):
+        return pd.read_csv(path, index_col=0)
+    else:
+        return update_naics_crosswalk()
 
 # SIC codes
 def update_sic86():

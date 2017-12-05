@@ -8,8 +8,7 @@ import warnings
 import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
-# from util import DATA_DIR, KEY_ENV_NAME, KEY_FILE_NAME, DEFAULT_API_URL
-from .util import DATA_DIR, KEY_ENV_NAME, KEY_FILE_NAME, DEFAULT_API_URL
+from .util import DATA_DIR, KEY_ENV_NAME, DEFAULT_API_URL
 from ..config import vconf, write_config
 
 
