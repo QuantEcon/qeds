@@ -31,4 +31,3 @@ else:
 
     with open(_cfg_file, "w") as config_file:
         vconf.write(config_file)
-
