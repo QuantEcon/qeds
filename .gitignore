@@ -1,0 +1,7 @@
+# Ignore any csv folders in this repo
+*.csv
+
+# Ignore certain Python files
+*.pyc
+*.ipynb_checkpoints
+
