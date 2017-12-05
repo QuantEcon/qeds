@@ -4,15 +4,16 @@ from a particular folder on the computer
 """
 import os
 import pandas as pd
-from .config import vconfig
+from .config import vconf, our_datasets
+from .retrieve import data_retrieve
 
-base_path = vconfig["PATH"]["data"]
+base_path = vconf["PATHS"]["data"]
 
 
-def data_read(name, kwargs):
+def data_read(name, kwargs={}):
     # Create the file name that corresponds to where this file
     # should be stored
-    fn = base_path.joinpath(name)
+    fn = os.path.join(base_path, name)
 
     # Check whether the file exists
     if os.path.exists(fn):
@@ -21,7 +22,7 @@ def data_read(name, kwargs):
 
     elif name in our_datasets:
         # Create the data
-        df = data_retrieve(name)
+        df = data_retrieve(name, **kwargs)
 
     else:
         msg = "The dataset name that you gave is not on your computer \n"

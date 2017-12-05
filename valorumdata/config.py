@@ -12,14 +12,20 @@ import pathlib
 _home = pathlib.Path.home()
 base_path = _home.joinpath(".valorum")
 _cfg_file = base_path.joinpath("config.ini")
+_data_path = base_path.joinpath("data")
 
-# Create configuration
+# List of all of our datasets
+our_datasets = ["test"]
+
+# Create configuration  TODO: Need better way to do this checking.. Not "safe"
 vconf = configparser.ConfigParser()
-if os.path.exists(_cfg_file):
-    vconf.read('.valorumdata.cfg')
+if os.path.exists(_cfg_file) and os.path.exists(_data_path):
+    vconf.read(_cfg_file)
 else:
+    os.mkdir(base_path)
+    os.mkdir(_data_path)
     vconf["PATHS"] = {
-        "data": base_path.joinpath("data"),
+        "data": _data_path,
         "config": _cfg_file
         }
 

@@ -4,14 +4,15 @@ This file is used to retrieve various datasets.
 The main function is `data_retrieve` which calls `_data_retrieve_name`
 to go retrieve the data from online.
 """
+import os
 import pandas as pd
-from .config import vconfig
+from .config import vconf
 
 
-base_path = vconfig["PATH"]["data"]
+base_path = vconf["PATHS"]["data"]
 
 
-def data_retrieve(name, kwargs):
+def data_retrieve(name, kwargs={}):
     """
     Retrieves a dataset according to the instructions maintained in
     another function `_data_retrieve_{name}` and saves it to your
@@ -35,8 +36,8 @@ def data_retrieve(name, kwargs):
     df = retrieve_func()
 
     # Save file
-    fn = base_path.joinpath(name + ".csv")
-    df.to_csv(filename, **kwargs)
+    fn = os.path.join(base_path, name+".csv")
+    df.to_csv(fn, **kwargs)
 
     return df
 
