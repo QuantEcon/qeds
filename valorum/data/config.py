@@ -19,6 +19,13 @@ our_datasets = ["test"]
 
 # Create configuration  TODO: Need better way to do this checking.. Not "safe"
 vconf = configparser.ConfigParser()
+
+
+def write_config():
+    with open(_cfg_file, "w") as config_file:
+        vconf.write(config_file)
+
+
 if os.path.exists(_cfg_file) and os.path.exists(_data_path):
     vconf.read(_cfg_file)
 else:
@@ -29,5 +36,4 @@ else:
         "config": _cfg_file
         }
 
-    with open(_cfg_file, "w") as config_file:
-        vconf.write(config_file)
+    write_config()

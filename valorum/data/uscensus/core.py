@@ -10,6 +10,7 @@ import requests
 from requests.adapters import HTTPAdapter
 # from util import DATA_DIR, KEY_ENV_NAME, KEY_FILE_NAME, DEFAULT_API_URL
 from .util import DATA_DIR, KEY_ENV_NAME, KEY_FILE_NAME, DEFAULT_API_URL
+from ..config import vconf, write_config
 
 
 if not os.path.isdir(DATA_DIR):
@@ -77,12 +78,13 @@ class QueryError(Exception):
 
 class CensusData(object):
     def __init__(self, url=DEFAULT_API_URL, key=None):
+        update_config = True
         if key is None:
             if KEY_ENV_NAME in os.environ:
                 key = os.environ[KEY_ENV_NAME]
-            elif os.path.isfile(KEY_FILE_NAME):
-                with open(KEY_FILE_NAME, "r") as f:
-                    key = f.read()
+            elif vconf.has_option("uscensus", "api_key"):
+                key = vconf.get("uscensus", "api_key")
+                update_config = False
             else:
                 raise EnvironmentError("Census API key not detected")
 
@@ -98,6 +100,12 @@ class CensusData(object):
         if not all(curses.ascii.isxdigit(i) for i in key):
             msg = f"API key {key} contains invalid characters"
             raise ValueError(msg)
+
+        if update_config:
+            vconf["uscensus"] = {
+                "api_key": key
+            }
+            write_config()
 
         self.key = key
         self.url = url
