@@ -1,4 +1,3 @@
-import collections
 import curses.ascii
 import json
 import os
@@ -10,6 +9,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from .util import DATA_DIR, KEY_ENV_NAME, DEFAULT_API_URL
 from ..config import vconf, write_config
+from ..util import _make_list, QueryError
 
 
 if not os.path.isdir(DATA_DIR):
@@ -39,19 +39,6 @@ def _load_metadata():
 _DATA_RAW, _DATA = _load_metadata()
 
 
-def _make_list(x):
-    if isinstance(x, int):
-        return [x]
-
-    if isinstance(x, str):
-        return [x]
-
-    if isinstance(x, collections.Sequence):
-        return list(x)
-
-    raise ValueError(f"Don't know how to make {x} a list")
-
-
 def query_predicate_string(name, arg):
     arg = _make_list(arg)
     if len(arg) > 0:
@@ -67,12 +54,6 @@ def query_predicate_string(name, arg):
 def geo_predicate_string(name, arg):
     arg = _make_list(arg)
     return name + ":" + ",".join(str(i) for i in arg)
-
-
-class QueryError(Exception):
-    def __init__(self, msg, response):
-        super(QueryError, self).__init__(msg)
-        self.response = response
 
 
 class CensusData(object):
@@ -132,7 +113,6 @@ class CensusData(object):
                 msa
             )
             return out
-
 
         if len(county) == 0:
             if len(state) == 0:
@@ -214,8 +194,10 @@ class CensusData(object):
                 msg += f"Response from server was\n{r.content}"
                 raise QueryError(msg, r)
 
+        key = ("metropolitan statistical area/"
+               "micropolitan statistical area")
         df.rename(
-            columns={"metropolitan statistical area/micropolitan statistical area": "MSA"},
+            columns={key: "MSA"},
             inplace=True
         )
 
@@ -227,7 +209,7 @@ class CensusData(object):
             if k == "SIC":
                 try:
                     df[k] = df[k].astype(int)
-                except:
+                except ValueError:
                     continue
 
             dtype_str = self.vars_df.loc["predicateType", k]
@@ -356,6 +338,7 @@ class ZipBusinessPatterns(CensusData):
             out += "&in=" + geo_predicate_string("state", state)
 
         return out
+
 
 if __name__ == '__main__':
     cbp = CountyBusinessPatterns(2010)

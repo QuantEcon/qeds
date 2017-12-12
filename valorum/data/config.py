@@ -6,34 +6,67 @@ if one does not exist then it creates one
 import configparser
 import os
 import pathlib
-
+import logging
 
 # Get home directory and config file
 _home = pathlib.Path.home()
-base_path = _home.joinpath(".valorum")
-_cfg_file = base_path.joinpath("config.ini")
-_data_path = base_path.joinpath("data")
+BASE_PATH = _home.joinpath(".valorum")
+CFG_FILE = BASE_PATH.joinpath("config.ini")
+BASE_DATA_DIR = BASE_PATH.joinpath("data")
 
 # List of all of our datasets
-our_datasets = ["test"]
+our_datasets = [
+    "test", "state_employment", "state_fips", "state_industry_employment"
+]
 
 # Create configuration  TODO: Need better way to do this checking.. Not "safe"
 vconf = configparser.ConfigParser()
 
 
 def write_config():
-    with open(_cfg_file, "w") as config_file:
+    with open(CFG_FILE, "w") as config_file:
         vconf.write(config_file)
 
 
-if os.path.exists(_cfg_file) and os.path.exists(_data_path):
-    vconf.read(_cfg_file)
+if os.path.exists(CFG_FILE) and os.path.exists(BASE_DATA_DIR):
+    vconf.read(CFG_FILE)
 else:
-    os.mkdir(base_path)
-    os.mkdir(_data_path)
+    os.mkdir(BASE_PATH)
+    os.mkdir(BASE_DATA_DIR)
     vconf["PATHS"] = {
-        "data": _data_path,
-        "config": _cfg_file
+        "data": BASE_DATA_DIR,
+        "config": CFG_FILE
         }
+    vconf["options"] = {
+        "file_format": "pkl"
+    }
 
     write_config()
+
+
+# --------------------- #
+# logging configuration #
+# --------------------- #
+
+level = vconf.get("options", "log_level", fallback=50)
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s:%(message)s',
+    level=level
+)
+
+
+def setup_logger(module):
+    log = logging.getLogger(module)
+    log.setLevel(level)
+    return log
+
+
+# ----- #
+# stuff #
+# ----- #
+EXTENSION = vconf.get("options", "file_format", fallback="pkl")
+if EXTENSION not in ["csv", "feather", "pkl"]:
+    m = "only accept extensions csv, feather, pkl\n"
+    m += f"found {EXTENSION}. Defaulting to pkl"
+    EXTENSION = "pkl"
+    logging.warning(m)

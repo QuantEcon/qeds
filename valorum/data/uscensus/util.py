@@ -1,10 +1,10 @@
 import os
 import pandas as pd
-from ..config import vconf
+from ..config import BASE_PATH
 
 DEFAULT_API_URL = "https://api.census.gov/data/"
 KEY_ENV_NAME = "USCENSUS_API_KEY"
-DATA_DIR = os.path.join(vconf.get("PATHS", "data"), "uscensus")
+DATA_DIR = os.path.join(BASE_PATH, "uscensus", "data")
 
 cbp_industry_var = {
     1986: "SIC",
