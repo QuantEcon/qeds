@@ -137,3 +137,31 @@ def _retrieve_state_industry_employment():
         dfs.append(df)
 
     return pd.concat(dfs).sort_index()
+
+
+def _retrieve_goodreads_books():
+    LOGGER.debug("Downloading goodreads books.csv from github")
+    url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
+    url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/books.csv"
+    return pd.read_csv(url)
+
+
+def _retrieve_goodreads_ratings():
+    LOGGER.debug("Downloading goodreads ratings.csv from github")
+    url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
+    url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/ratings.csv"
+    return pd.read_csv(url)
+
+
+def _retrieve_goodreads_tags():
+    LOGGER.debug("Downloading goodreads tags.csv from github")
+    url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
+    url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/tags.csv"
+    return pd.read_csv(url)
+
+
+def _retrieve_goodreads_book_tags():
+    LOGGER.debug("Downloading goodreads book_tags.csv from github")
+    url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
+    url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/book_tags.csv"
+    return pd.read_csv(url)
