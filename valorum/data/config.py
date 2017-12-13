@@ -14,11 +14,6 @@ BASE_PATH = _home.joinpath(".valorum")
 CFG_FILE = BASE_PATH.joinpath("config.ini")
 BASE_DATA_DIR = BASE_PATH.joinpath("data")
 
-# List of all of our datasets
-our_datasets = [
-    "test", "state_employment", "state_fips", "state_industry_employment"
-]
-
 # Create configuration  TODO: Need better way to do this checking.. Not "safe"
 vconf = configparser.ConfigParser()
 
@@ -50,7 +45,7 @@ else:
 
 level = vconf.get("options", "log_level", fallback=50)
 logging.basicConfig(
-    format='%(asctime)s %(levelname)s:%(message)s',
+    format='%(levelname)s.%(name)s %(asctime)s: %(message)s',
     level=level
 )
 
@@ -61,9 +56,10 @@ def setup_logger(module):
     return log
 
 
-# ----- #
-# stuff #
-# ----- #
+# ------- #
+# options #
+# ------- #
+
 EXTENSION = vconf.get("options", "file_format", fallback="pkl")
 if EXTENSION not in ["csv", "feather", "pkl"]:
     m = "only accept extensions csv, feather, pkl\n"
