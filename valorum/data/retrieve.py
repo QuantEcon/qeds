@@ -165,3 +165,48 @@ def _retrieve_goodreads_book_tags():
     url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
     url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/book_tags.csv"
     return pd.read_csv(url)
+
+
+def _get_airline_data(url):
+    df = pd.read_csv(url)
+    df["Date"] = pd.to_datetime(df["FL_DATE"])
+    df.drop("FL_DATE", axis=1, inplace=True)
+    bad_cols = list(filter(lambda x: x.startswith("Unnamed"), list(df)))
+    df.drop(bad_cols, axis=1, inplace=True)
+
+    df.rename(columns={x: x.title() for x in list(df)}, inplace=True)
+
+    for col in ["Crs_Dep_Time", "Crs_Arr_Time"]:
+        dt_string = df["Date"].astype(str) + df[col].astype(str).str.zfill(4)
+        df[col] = pd.to_datetime(dt_string, format="%Y-%m-%d%H%M")
+
+    for col in ["Dep_Time", "Arr_Time"]:
+        t_string = df[col].astype(str).str[:-2].str.zfill(4)
+        dt_string = df["Date"].astype(str) + t_string
+        df[col] = pd.to_datetime(dt_string, format="%Y-%m-%d%H%M",
+                                 errors="coerce")
+
+    # If the delay value is a NaN then no delay for any of these reasons... Replace with 0.0
+    delays = ["Weather_Delay", "Carrier_Delay", "Nas_Delay", "Security_Delay", "Late_Aircraft_Delay"]
+    df.loc[:, delays] = df.loc[:, delays].fillna(0.0)
+
+    return df
+
+
+def _retrieve_airline_performance_dec16():
+    url = "https://s3.us-east-2.amazonaws.com/valorum-materials/"
+    url += "data/December2016_ontimeflights.zip"
+    return _get_airline_data(url)
+
+
+def _retrieve_airline_performance_nov16():
+    url = "https://s3.us-east-2.amazonaws.com/valorum-materials/"
+    url += "data/November2016_ontimeflights.zip"
+    return _get_airline_data(url)
+
+
+def _retrieve_airline_carrier_codes():
+    url = "https://s3.us-east-2.amazonaws.com/valorum-materials/data/"
+    url += "Carrier_Codes.csv"
+    return pd.read_csv(url).set_index("Code")
+
