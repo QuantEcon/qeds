@@ -31,7 +31,7 @@ else:
     vconf["PATHS"] = {
         "data": BASE_DATA_DIR,
         "config": CFG_FILE
-        }
+    }
     vconf["options"] = {
         "file_format": "pkl"
     }

@@ -27,7 +27,7 @@ def load(name, kwargs={}):
             return pd.read_feather(fn, **kwargs)
     else:
         return retrieve(name)
-    
+
 
 def retrieve(name, kwargs={}):
     """
@@ -60,7 +60,7 @@ def retrieve(name, kwargs={}):
     df = func()
 
     # Save file
-    fn = os.path.join(BASE_PATH, name+"."+EXTENSION)
+    fn = os.path.join(BASE_PATH, name + "." + EXTENSION)
     if EXTENSION == "csv":
         df.to_csv(fn, **kwargs)
     elif EXTENSION == "pkl":

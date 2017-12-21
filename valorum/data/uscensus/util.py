@@ -120,6 +120,7 @@ def get_naics_crosswalk():
     else:
         return update_naics_crosswalk()
 
+
 # SIC codes
 def update_sic86():
     url = "http://www2.census.gov/programs-surveys/cbp/technical-documentation"

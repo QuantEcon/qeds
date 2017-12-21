@@ -12,7 +12,7 @@ from ..util import _make_list, QueryError, iter_chunks
 
 from .util import (
     DEFAULT_API_URL, KEY_ENV_NAME, LIMITS, BLS_STATUS_CODE_REASONS,
-    )
+)
 
 LOGGER = setup_logger(__name__)
 
@@ -130,9 +130,9 @@ class BLSData(object):
             startyear = endyear - (nyear - 1)
 
         # Chunk on years if user asked for more than 20 years
-        if endyear - startyear > (nyear-1):
+        if endyear - startyear > (nyear - 1):
             to_cat = []
-            for year_chunks in iter_chunks(range(startyear, endyear+1), nyear):
+            for year_chunks in iter_chunks(range(startyear, endyear + 1), nyear):
                 df = self.get(
                     series, year_chunks[0], year_chunks[-1], nice_names, wide
                 )
