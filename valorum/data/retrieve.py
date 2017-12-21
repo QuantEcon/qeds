@@ -176,7 +176,7 @@ def _get_airline_data(url):
     df.drop(bad_cols, axis=1, inplace=True)
 
     df.rename(columns={x: x.title() for x in list(df)}, inplace=True)
-    
+
     for col in ["Crs_Dep_Time", "Crs_Arr_Time"]:
         LOGGER.debug(f"Converting column {col} to datetime")
         dt_string = df["Date"].astype(str) + df[col].astype(str).str.zfill(4)
@@ -189,8 +189,12 @@ def _get_airline_data(url):
         df[col] = pd.to_datetime(dt_string, format="%Y-%m-%d%H%M",
                                  errors="coerce")
 
-    # If the delay value is a NaN then no delay for any of these reasons... Replace with 0.0
-    delays = ["Weather_Delay", "Carrier_Delay", "Nas_Delay", "Security_Delay", "Late_Aircraft_Delay"]
+    # If the delay value is a NaN then no delay for any of these reasons...
+    # Replace with 0.0
+    delays = [
+        "Weather_Delay", "Carrier_Delay", "Nas_Delay", "Security_Delay",
+        "Late_Aircraft_Delay"
+    ]
     df.loc[:, delays] = df.loc[:, delays].fillna(0.0)
 
     return df
@@ -212,4 +216,3 @@ def _retrieve_airline_carrier_codes():
     url = "https://s3.us-east-2.amazonaws.com/valorum-materials/data/"
     url += "Carrier_Codes.csv"
     return pd.read_csv(url).set_index("Code")
-
