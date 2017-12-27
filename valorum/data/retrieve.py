@@ -170,19 +170,17 @@ def _retrieve_goodreads_book_tags():
 def _get_airline_data(url):
     LOGGER.debug(f"Downloading airline data from {url}")
     df = pd.read_csv(url)
-    df["Date"] = pd.to_datetime(df["FL_DATE"])
-    df.drop("FL_DATE", axis=1, inplace=True)
+    df["Date"] = pd.to_datetime(df["FlightDate"])
+    df.drop("FlightDate", axis=1, inplace=True)
     bad_cols = list(filter(lambda x: x.startswith("Unnamed"), list(df)))
     df.drop(bad_cols, axis=1, inplace=True)
 
-    df.rename(columns={x: x.title() for x in list(df)}, inplace=True)
-
-    for col in ["Crs_Dep_Time", "Crs_Arr_Time"]:
+    for col in ["CRSDepTime", "CRSArrTime"]:
         LOGGER.debug(f"Converting column {col} to datetime")
         dt_string = df["Date"].astype(str) + df[col].astype(str).str.zfill(4)
         df[col] = pd.to_datetime(dt_string, format="%Y-%m-%d%H%M")
 
-    for col in ["Dep_Time", "Arr_Time"]:
+    for col in ["DepTime", "ArrTime"]:
         LOGGER.debug(f"Converting column {col} to datetime")
         t_string = df[col].astype(str).str[:-2].str.zfill(4)
         dt_string = df["Date"].astype(str) + t_string
@@ -192,8 +190,8 @@ def _get_airline_data(url):
     # If the delay value is a NaN then no delay for any of these reasons...
     # Replace with 0.0
     delays = [
-        "Weather_Delay", "Carrier_Delay", "Nas_Delay", "Security_Delay",
-        "Late_Aircraft_Delay"
+        "WeatherDelay", "CarrierDelay", "NASDelay", "SecurityDelay",
+        "LateAircraftDelay"
     ]
     df.loc[:, delays] = df.loc[:, delays].fillna(0.0)
 
@@ -202,13 +200,13 @@ def _get_airline_data(url):
 
 def _retrieve_airline_performance_dec16():
     url = "https://s3.us-east-2.amazonaws.com/valorum-materials/"
-    url += "data/December2016_ontimeflights.zip"
+    url += "data/December2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
 def _retrieve_airline_performance_nov16():
     url = "https://s3.us-east-2.amazonaws.com/valorum-materials/"
-    url += "data/November2016_ontimeflights.zip"
+    url += "data/November2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
