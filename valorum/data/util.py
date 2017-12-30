@@ -1,4 +1,7 @@
 import collections
+import datetime
+import random
+import pandas as pd
 
 
 def _make_list(x):
@@ -24,3 +27,12 @@ def iter_chunks(l, n):
     """Yield successive n-sized chunks from l."""
     for i in range(0, len(l), n):
         yield l[i:(i + n)]
+
+
+def random_dates(startdate, enddate, N, format="%Y-%m-%d"):
+    # dates
+    start = pd.to_datetime(startdate).to_pydatetime()
+    end = pd.to_datetime(enddate).to_pydatetime()
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    return [start + datetime.timedelta(seconds=random.randrange(int_delta)) for i in range(N)]
