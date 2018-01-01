@@ -1,5 +1,25 @@
-DEFAULT_API_URL = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
-KEY_ENV_NAME = "BLS_API_KEY"
+import curses.ascii
+import warnings
+from ..config import _get_option
+
+
+def validate_api_key(key):
+    API_KEY_LENGTH = 32
+    if len(key) > API_KEY_LENGTH:
+        key = key[:API_KEY_LENGTH]
+        msg = f"API key too long, using first {API_KEY_LENGTH} characters"
+        warnings.warn(msg)
+    elif len(key) < API_KEY_LENGTH:
+        msg = f"API key {key} too short. Should be {API_KEY_LENGTH} chars"
+        raise ValueError(msg)
+
+    if not all(curses.ascii.isxdigit(i) for i in key):
+        msg = f"API key {key} contains invalid characters"
+        raise ValueError(msg)
+
+
+_get_option("bls", "api_key").validator = validate_api_key
+
 
 LIMITS = {
     "years_per_query": 20,

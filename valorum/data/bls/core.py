@@ -1,28 +1,24 @@
-import curses
 import datetime
 import os
-import warnings
 
 import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
 
-from ..config import vconf, write_config, setup_logger
+from ..config import options, setup_logger
 from ..util import _make_list, QueryError, iter_chunks
 
-from .util import (
-    DEFAULT_API_URL, KEY_ENV_NAME, LIMITS, BLS_STATUS_CODE_REASONS,
-)
+from .util import LIMITS, BLS_STATUS_CODE_REASONS
 
 LOGGER = setup_logger(__name__)
 
 
 class BLSData(object):
-    def __init__(self, url=DEFAULT_API_URL, key=None):
+    def __init__(self, url=None, key=None):
         """
         Parameters
         ----------
-        url : string, optional(default=valorum.data.bls.util.DEFAULT_API_URL)
+        url : string, optional(default={url})
             The API url to be used when requesting data from the BLS
 
         key : string, optional
@@ -43,39 +39,30 @@ class BLSData(object):
             If either step 2 or step 2 succeeds, we will store the api key
             in the valorumm conf fil under `bls.api_key`. This means you
             should only need to supply a key once per machine.
-        """.format(key_env_name=KEY_ENV_NAME)
+        """.format(
+            url=options["bls.api_url"],
+            key_env_name=options["bls.environment_variable"]
+        )
 
         update_config = True
         if key is None:
+            KEY_ENV_NAME = options["bls.environment_variable"]
             if KEY_ENV_NAME in os.environ:
                 key = os.environ[KEY_ENV_NAME]
-            elif vconf.has_option("bls", "api_key"):
-                key = vconf.get("bls", "api_key")
+            elif options["bls.api_key"] is not None:
+                key = options["bls.api_key"]
                 update_config = False
             else:
                 url = "https://data.bls.gov/registrationEngine/"
                 msg = f"BLS API key not detected. Please make one at {url}"
-                msg += " and "
-                raise EnvironmentError()
-
-        API_KEY_LENGTH = 32
-        if len(key) > API_KEY_LENGTH:
-            key = key[:API_KEY_LENGTH]
-            msg = f"API key too long, using first {API_KEY_LENGTH} characters"
-            warnings.warn(msg)
-        elif len(key) < API_KEY_LENGTH:
-            msg = f"API key {key} too short. Should be {API_KEY_LENGTH} chars"
-            raise ValueError(msg)
-
-        if not all(curses.ascii.isxdigit(i) for i in key):
-            msg = f"API key {key} contains invalid characters"
-            raise ValueError(msg)
+                msg += " and add to call `valorum.options['bls.api_key']=key`"
+                raise EnvironmentError(msg)
 
         if update_config:
-            vconf["bls"] = {
-                "api_key": key
-            }
-            write_config()
+            options["bls.api_key"] = key
+
+        if url is None:
+            url = options["bls.api_url"]
 
         self.key = key
         self.url = url

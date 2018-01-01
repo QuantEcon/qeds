@@ -4,16 +4,16 @@ from a particular folder on the computer
 """
 import os
 import pandas as pd
-from .config import vconf, setup_logger, EXTENSION
+from .config import options, setup_logger
 
-BASE_PATH = vconf["PATHS"]["data"]
 LOGGER = setup_logger(__name__)
 
 
 def load(name, kwargs={}):
     # Create the file name that corresponds to where this file
     # should be stored
-    fn = os.path.join(BASE_PATH, name) + "." + EXTENSION
+    EXTENSION = options["options.file_format"]
+    fn = os.path.join(options["PATHS.data"], name) + "." + EXTENSION
 
     # Check whether the file exists
     if os.path.exists(fn):
@@ -46,7 +46,7 @@ def retrieve(name, kwargs={}):
     None
 
     """
-    from .retrieve import __dict__ as retrievers
+    from .retrievers import __dict__ as retrievers
 
     func_name = "_retrieve_{}".format(name)
     func = retrievers.get(func_name, None)
@@ -60,7 +60,8 @@ def retrieve(name, kwargs={}):
     df = func()
 
     # Save file
-    fn = os.path.join(BASE_PATH, name + "." + EXTENSION)
+    EXTENSION = options["options.file_format"]
+    fn = os.path.join(options["PATHS.data"], name + "." + EXTENSION)
     if EXTENSION == "csv":
         df.to_csv(fn, **kwargs)
     elif EXTENSION == "pkl":
@@ -69,3 +70,31 @@ def retrieve(name, kwargs={}):
         df.to_feather(fn, **kwargs)
 
     return df
+
+
+def available(name=None):
+    """
+    Return a list of available datasets
+
+    Parameters
+    ----------
+    name : string (optional)
+        A string used to filter datasets. Datasets that include ``name``
+        in the name of the dataset are kept. If nothing is given for this
+        argument, no filtering is done
+
+    Returns
+    -------
+    datasets : list(string)
+        A list of available
+    """
+
+    from .retrievers import __dict__ as retrievers
+
+    skip = len("_retrieve_")
+    out = (k[skip:] for k in retrievers.keys() if k.startswith("_retrieve_"))
+
+    if name is None:
+        return list(out)
+
+    return list(k for k in out if name in k)
