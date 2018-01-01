@@ -1,34 +1,28 @@
-import curses.ascii
 import json
 import os
 import textwrap
-import warnings
 
 import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
-from .util import DATA_DIR, KEY_ENV_NAME, DEFAULT_API_URL
-from ..config import vconf, write_config
+from ..config import options
 from ..util import _make_list, QueryError
-
-
-if not os.path.isdir(DATA_DIR):
-    os.makedirs(DATA_DIR)
 
 
 def _update_data_file():
     url = "https://api.census.gov/data.json"
     r = requests.get(url)
-    file_path = os.path.join(DATA_DIR, "data.json")
+    file_path = os.path.join(options["uscensus.data_dir"], "data.json")
     with open(file_path, "w") as f:
         f.write(json.dumps(r.json()))
 
 
 def _load_metadata():
-    if not os.path.isfile(os.path.join(DATA_DIR, "data.json")):
+    data_fn = os.path.join(options["uscensus.data_dir"], "data.json")
+    if not os.path.isfile(data_fn):
         _update_data_file()
 
-    with open(os.path.join(DATA_DIR, "data.json"), "r") as f:
+    with open(data_fn, "r") as f:
         _DATA_RAW = json.load(f)
 
     _DATA = pd.DataFrame(_DATA_RAW["dataset"])
@@ -57,35 +51,51 @@ def geo_predicate_string(name, arg):
 
 
 class CensusData(object):
-    def __init__(self, url=DEFAULT_API_URL, key=None):
+    def __init__(self, url=None, key=None):
+        """
+        Parameters
+        ----------
+        url : string, optional(default={url})
+            The API url to be used when requesting data from the BLS
+
+        key : string, optional
+            The API registrationKey to be used when requesting data.
+            There are three possibilities for determining which api key is
+            used:
+
+            1. User argument: if the argument supplied here is a valid
+               BLS registration key, then that value will be used
+            2. Environment variable: if step 1 fails, we will attempt to use
+               the value of the environment variable {key_env_name}.
+            3. Valorum conf: if that fails, we will attempt to look up the
+               value in section `bls.api_key` if your valorum conf file
+
+            If all three of those fail, we throw an error whose message
+            contains instructions for how to obtain a registration key.
+
+            If either step 2 or step 2 succeeds, we will store the api key
+            in the valorumm conf fil under `bls.api_key`. This means you
+            should only need to supply a key once per machine.
+        """.format(
+            url=options["uscensus.api_url"],
+            key_env_name=options["uscensus.environment_variable"]
+        )
         update_config = True
         if key is None:
+            KEY_ENV_NAME = options["uscensus.environment_variable"]
             if KEY_ENV_NAME in os.environ:
                 key = os.environ[KEY_ENV_NAME]
-            elif vconf.has_option("uscensus", "api_key"):
-                key = vconf.get("uscensus", "api_key")
+            elif options["uscensus.api_key"] is not None:
+                key = options["uscensus.api_key"]
                 update_config = False
             else:
                 raise EnvironmentError("Census API key not detected")
 
-        API_KEY_LENGTH = 40
-        if len(key) > API_KEY_LENGTH:
-            key = key[:API_KEY_LENGTH]
-            msg = f"API key too long, using first {API_KEY_LENGTH} characters"
-            warnings.warn(msg)
-        elif len(key) < API_KEY_LENGTH:
-            msg = f"API key {key} too short. Should be {API_KEY_LENGTH} chars"
-            raise ValueError(msg)
-
-        if not all(curses.ascii.isxdigit(i) for i in key):
-            msg = f"API key {key} contains invalid characters"
-            raise ValueError(msg)
-
         if update_config:
-            vconf["uscensus"] = {
-                "api_key": key
-            }
-            write_config()
+            options["uscensus.api_key"] = key
+
+        if url is None:
+            url = options["uscensus.api_url"]
 
         self.key = key
         self.url = url
@@ -232,7 +242,7 @@ class CensusData(object):
 
     def _variables_file_name(self):
         name = self.dataset.replace("/", "_")
-        return os.path.join(DATA_DIR, f"{name}.json")
+        return os.path.join(options["uscensus.data_dir"], f"{name}.json")
 
     def _get_variables_file(self):
         fn = self._variables_file_name()
@@ -263,7 +273,7 @@ class CensusData(object):
 
 class CountyBusinessPatterns(CensusData):
 
-    def __init__(self, year, url=DEFAULT_API_URL, key=None):
+    def __init__(self, year, url=None, key=None):
         super(CountyBusinessPatterns, self).__init__(url, key)
         self.year = year
         self.dataset = f"{year}/cbp"
@@ -288,7 +298,7 @@ class CountyBusinessPatterns(CensusData):
 
 class ZipBusinessPatterns(CensusData):
 
-    def __init__(self, year, url=DEFAULT_API_URL, key=None):
+    def __init__(self, year, url=None, key=None):
         super(ZipBusinessPatterns, self).__init__(url, key)
         self.year = year
         self.dataset = f"{year}/zbp"

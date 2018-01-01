@@ -1,7 +1,14 @@
-from .config import vconf
-from .loader import load, retrieve
+from . import config
+from . import shopify
+from . import loader
+from . import retrievers
+
+from .config import options
+from .loader import load, retrieve, available
 
 from .uscensus import *
 from .bls import *
 
-from . import shopify
+
+__all__ = ["config", "shopify", "loader", "retrievers", "options", "load",
+           "retrieve", "available"]

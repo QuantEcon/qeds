@@ -1,10 +1,29 @@
 import os
+import warnings
+import curses.ascii
 import pandas as pd
-from ..config import BASE_PATH
+from ..config import options, _get_option
 
-DEFAULT_API_URL = "https://api.census.gov/data/"
-KEY_ENV_NAME = "USCENSUS_API_KEY"
-DATA_DIR = os.path.join(BASE_PATH, "uscensus", "data")
+if not os.path.isdir(options["uscensus.data_dir"]):
+    os.makedirs(options["uscensus.data_dir"])
+
+
+def validate_api_key(key):
+    API_KEY_LENGTH = 40
+    if len(key) > API_KEY_LENGTH:
+        key = key[:API_KEY_LENGTH]
+        msg = f"API key too long, using first {API_KEY_LENGTH} characters"
+        warnings.warn(msg)
+    elif len(key) < API_KEY_LENGTH:
+        msg = f"API key {key} too short. Should be {API_KEY_LENGTH} chars"
+        raise ValueError(msg)
+
+    if not all(curses.ascii.isxdigit(i) for i in key):
+        msg = f"API key {key} contains invalid characters"
+        raise ValueError(msg)
+
+
+_get_option("uscensus", "api_key").validator = validate_api_key
 
 cbp_industry_var = {
     1986: "SIC",
@@ -54,12 +73,12 @@ def update_fips_2010():
     df.set_index(["State", "County"], inplace=True)
     df.index.name = "FIPS"
     df.sort_index(inplace=True)
-    df.to_csv(os.path.join(DATA_DIR, "fips2010.csv"))
+    df.to_csv(os.path.join(options["uscensus.data_dir"], "fips2010.csv"))
     return df
 
 
 def get_fips_2010():
-    path = os.path.join(DATA_DIR, "fips2010.csv")
+    path = os.path.join(options["uscensus.data_dir"], "fips2010.csv")
     if os.path.isfile(path):
         return pd.read_csv(path, index_col=[0, 1])
 
@@ -68,7 +87,7 @@ def get_fips_2010():
 
 
 def get_naics2002_to_sics():
-    path = os.path.join(DATA_DIR, "naics2002_to_sic.csv")
+    path = os.path.join(options["uscensus.data_dir"], "naics2002_to_sic.csv")
     if os.path.isfile(path):
         return pd.read_csv(path, index_col=0)
     else:
@@ -80,7 +99,7 @@ def update_naics2002_to_sics():
     url = "https://www.census.gov/eos/www/naics/"
     url += "concordances/1987_SIC_to_2002_NAICS.xls"
     df = pd.read_excel(url, skip_footer=1)
-    df.to_csv(os.path.join(DATA_DIR, "naics2002_to_sic.csv"))
+    df.to_csv(os.path.join(options["uscensus.data_dir"], "naics2002_to_sic.csv"))
     return df
 
 
@@ -109,12 +128,12 @@ def update_naics_crosswalk():
         usecols=[0, 2],
         names=["NAICS2007", "NAICS2002"],
     ))
-    df.to_csv(os.path.join(DATA_DIR, "naics_crosswalk.csv"))
+    df.to_csv(os.path.join(options["uscensus.data_dir"], "naics_crosswalk.csv"))
     return df
 
 
 def get_naics_crosswalk():
-    path = os.path.join(DATA_DIR, "naics_crosswalk.csv")
+    path = os.path.join(options["uscensus.data_dir"], "naics_crosswalk.csv")
     if os.path.isfile(path):
         return pd.read_csv(path, index_col=0)
     else:
@@ -127,12 +146,12 @@ def update_sic86():
     url += "/records-layouts/sic-code-descriptions/sic86.txt"
     df = pd.read_csv(url, sep="    ")
     df.columns = ["SIC", "NAME"]
-    df.to_csv(os.path.join(DATA_DIR, "sic86.csv"))
+    df.to_csv(os.path.join(options["uscensus.data_dir"], "sic86.csv"))
     return df
 
 
 def get_sic86():
-    path = os.path.join(DATA_DIR, "sic86.csv")
+    path = os.path.join(options["uscensus.data_dir"], "sic86.csv")
     if os.path.isfile(path):
         return pd.read_csv(path, index_col=0)
     else:
@@ -144,12 +163,12 @@ def update_sic87():
     url += "/records-layouts/sic-code-descriptions/sic87.txt"
     df = pd.read_csv(url, sep="    ")
     df.columns = ["SIC", "NAME"]
-    df.to_csv(os.path.join(DATA_DIR, "sic87.csv"))
+    df.to_csv(os.path.join(options["uscensus.data_dir"], "sic87.csv"))
     return df
 
 
 def get_sic87():
-    path = os.path.join(DATA_DIR, "sic87.csv")
+    path = os.path.join(options["uscensus.data_dir"], "sic87.csv")
     if os.path.isfile(path):
         return pd.read_csv(path, index_col=0)
     else:
