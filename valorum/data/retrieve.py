@@ -7,6 +7,7 @@ import pandas as pd
 from .config import setup_logger
 from .loader import load
 from .bls import BLSData
+from .socrata import SocrataData
 
 LOGGER = setup_logger(__name__)
 
@@ -214,3 +215,36 @@ def _retrieve_airline_carrier_codes():
     url = "https://s3.us-east-2.amazonaws.com/valorum-materials/data/"
     url += "Carrier_Codes.csv"
     return pd.read_csv(url).set_index("Code")
+
+
+def _retrieve_nyc_employee():
+    # Download data
+    sd = SocrataData("4qxi-jgbe", "NYCOpenData")
+    df = sd.get(limit=None)  # Get all observations
+
+    #
+    # Clean data up
+    #
+
+    # Convert columns to numeric
+    num_columns = ["base_salary", "fiscal_year", "ot_hours",
+                   "regular_gross_paid", "regular_hours", "total_ot_paid",
+                   "total_other_pay"]
+    for col in num_columns:
+        df[col] = pd.to_numeric(df[col])
+
+    # Convert to datetime
+    str_f = "%Y-%m-%dT00:00:00.000"
+    df.replace("9999-12-31T00:00:00.000", pd.np.nan, inplace=True)
+    df["agency_start_date"] = pd.to_datetime(df["agency_start_date"],
+                                             format=str_f)
+
+    # Stupid strings
+    str_columns = ["agency_name", "first_name", "mid_init", "last_name",
+                   "leave_status_as_of_july_31", "pay_basis",
+                   "title_description", "work_location_borough"]
+    for col in str_columns:
+        df[col] = df[col].str.strip().replace(pd.np.nan, "")
+
+    return df
+
