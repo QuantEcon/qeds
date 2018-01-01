@@ -244,7 +244,9 @@ def _retrieve_nyc_employee():
                    "leave_status_as_of_july_31", "pay_basis",
                    "title_description", "work_location_borough"]
     for col in str_columns:
-        df[col] = df[col].str.strip().replace(pd.np.nan, "")
+        df[col] = (df[col].str.strip()  # Drop stupid spaces
+                          .str.upper()  # Capitalize
+                          .replace(pd.np.nan, ""))
 
     return df
 
