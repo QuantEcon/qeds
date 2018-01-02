@@ -65,7 +65,7 @@ _valid_options = {
         ),
         Option(
             "data",
-            BASE_DATA_DIR,
+            str(BASE_DATA_DIR),
             "Default directory for saving loaded data",
             _no_validation
         ),
