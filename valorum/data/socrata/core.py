@@ -4,11 +4,9 @@ import pandas as pd
 import requests
 import warnings
 
-from ..config import vconf, write_config, setup_logger
+from ..config import options, setup_logger
 
-from .util import (
-    KEY_ENV_NAME, SOCRATA_STATUS_CODE_REASONS,
-)
+from .util import SOCRATA_STATUS_CODE_REASONS
 
 LOGGER = setup_logger(__name__)
 
@@ -25,8 +23,11 @@ class SocrataData(object):
 
         Parameters
         ----------
-        url : string
-            The API url to be used when requesting data from a Socrata site
+        dataset : string
+            TODO
+
+        datasource : string
+            TODO
 
         key : string, optional
             The API registrationKey to be used when requesting data.
@@ -46,7 +47,7 @@ class SocrataData(object):
             If either step 1 or step 2 succeeds, we will store the api key
             in the valorumm conf file under `socrata.api_key`. This means you
             should only need to supply a key once per machine.
-        """.format(key_env_name=KEY_ENV_NAME)
+        """.format(key_env_name=options["socrata.environment_variable"])
         # Check whether it is a valid datasource
         if datasource not in self._socrata_datasources.keys():
             msg = "Dataset not found in list of Socrata datasets"
@@ -61,27 +62,25 @@ class SocrataData(object):
         # Find key
         update_config = True
         if key is None:
+            KEY_ENV_NAME = options["socrata.environment_variable"]
             if KEY_ENV_NAME in os.environ:
                 key = os.environ[KEY_ENV_NAME]
-            elif vconf.has_option("socrata", "api_key"):
-                key = vconf.get("socrata", "api_key")
+            elif options["socrata.api_key"] is not None:
+                key = options["socrata.api_key"]
                 update_config = False
             else:
                 url = "https://dev.socrata.com/register"
                 msg = "\nSocrata API key not detected"
                 msg += " please obtain one from {}".format(url)
-                msg += " and re-try this command and set the `key` argument."
+                msg += " and call `valorum.options['socrata.api_key']=key`"
                 msg += "\nFor now we will use no key. Socrata might limit"
                 msg += " our usage."
                 warnings.warn(msg)
 
-
         # If we don't already have they key then save it
-        if update_config and key is not None:
-            vconf["socrata"] = {
-                "api_key": key
-            }
-            write_config()
+        if update_config:
+            LOGGER.debug("Saving socrata API key")
+            options["socrata.api_key"] = key
 
         # Get information ready for requests
         self.dataset = dataset
@@ -118,11 +117,17 @@ class SocrataData(object):
             lim_params.update({"$select": "count(*)"})
 
             # Make request and figure out limit
+            LOGGER.debug("Requesting data from {} with params {}".format(
+                req_url, lim_params
+            ))
             req_count = requests.get(req_url, headers=self.headers, params=lim_params)
             limit = int(req_count.json()[0]["count"])
 
         # Add limit to params and request data
         SoQL["$limit"] = limit
+        LOGGER.debug("Requesting data from {} with params {}".format(
+            req_url, SoQL
+        ))
         records = requests.get(req_url, headers=self.headers, params=SoQL)
 
         # Raise error if not success

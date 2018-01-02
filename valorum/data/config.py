@@ -134,7 +134,27 @@ _valid_options = {
             "URL through which to access the BLS API",
             _no_validation
         )
-
+    ],
+    "socrata": [
+        Option(
+            "api_key",
+            None,
+            """API key for accessing data from the Socrata API. Obtain one at\
+            https://dev.socrata.com/register/""",
+            _no_validation
+        ),
+        Option(
+            "environment_variable",
+            "SOCRATA_API_KEY",
+            "Environment variable to search for api_key for Socrata",
+            _no_validation
+        ),
+        Option(
+            "api_url",
+            "https://api.bls.gov/publicAPI/v2/timeseries/data/",
+            "URL through which to access the BLS API",
+            _no_validation
+        )
     ]
 }
 
