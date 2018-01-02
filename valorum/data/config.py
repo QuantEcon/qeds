@@ -149,12 +149,6 @@ _valid_options = {
             "Environment variable to search for api_key for Socrata",
             _no_validation
         ),
-        Option(
-            "api_url",
-            "https://api.bls.gov/publicAPI/v2/timeseries/data/",
-            "URL through which to access the BLS API",
-            _no_validation
-        )
     ]
 }
 
