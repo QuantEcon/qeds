@@ -55,7 +55,7 @@ class BLSData(object):
             else:
                 url = "https://data.bls.gov/registrationEngine/"
                 msg = f"BLS API key not detected. Please make one at {url}"
-                msg += " and add to call `valorum.options['bls.api_key']=key`"
+                msg += " and call `valorum.options['bls.api_key']=key`"
                 raise EnvironmentError(msg)
 
         if update_config:
