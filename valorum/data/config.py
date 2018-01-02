@@ -79,11 +79,10 @@ _valid_options = {
         ),
         Option(
             "log_level",
-            "50",
+            "CRITICAL",
             "Default level for filtering logging messages",
             _member_validation([
-                "0", "10", "20", "30", "40", "50", "CRITICAL", "ERROR",
-                "WARNING", "INFO", "DEBUG", "NOTSET"
+                "CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "NOTSET"
             ])
         )
     ],

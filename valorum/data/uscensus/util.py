@@ -4,9 +4,6 @@ import curses.ascii
 import pandas as pd
 from ..config import options, _get_option
 
-if not os.path.isdir(options["uscensus.data_dir"]):
-    os.makedirs(options["uscensus.data_dir"])
-
 
 def validate_api_key(key):
     API_KEY_LENGTH = 40
