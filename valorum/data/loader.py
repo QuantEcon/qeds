@@ -62,6 +62,12 @@ def retrieve(name, kwargs={}):
     # Save file
     EXTENSION = options["options.file_format"]
     fn = os.path.join(options["PATHS.data"], name + "." + EXTENSION)
+
+    # Check whether the folder exists and if not create it
+    if not os.path.exists(options["PATHS.data"]):
+        os.makedirs(options["PATHS.data"])
+
+    # Save data into folder
     if EXTENSION == "csv":
         df.to_csv(fn, **kwargs)
     elif EXTENSION == "pkl":
