@@ -250,3 +250,8 @@ def _retrieve_nyc_employee():
 
     return df
 
+
+def _retrieve_chipotle_raw():
+    url = "https://raw.githubusercontent.com/TheUpshot/"
+    url += "chipotle/master/orders.tsv"
+    return pd.read_csv(url, sep="\t")
