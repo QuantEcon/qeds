@@ -12,14 +12,15 @@ As of now (1-1-18) this package is not registered on pypy. To install and use we
 
 To see a list of available datasets run
 
-```python
+```
 import valorum
+
 valorum.data.available()
 ```
 
 To load one of the listed datasets run
 
-```python
+```
 df = valorum.data.load("dataset_name")
 ```
 
@@ -33,8 +34,9 @@ The valorum library is configurable. Below is a listing of available configurati
 
 To see a list of valid configuration options run
 
-```python
+```
 import valorum
+
 valorum.data.config.describe_options()
 ```
 
@@ -42,8 +44,9 @@ To set a configuration use `valourm.data.options[section.option] = value`.
 
 For example, to set the configuration option for the BLS api_key I would call:
 
-```python
+```
 import valorum
+
 valorum.data.options["bls.api_key"] = "MY_API_KEY"
 ```
 

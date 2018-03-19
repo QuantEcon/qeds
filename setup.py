@@ -14,6 +14,8 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
+descr = "Python library for loading/cleaning data used in Valorum training"
+
 setup(
     name="valorum",
 
@@ -22,7 +24,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version="0.0.1",
 
-    description="Python library for loading/cleaning data used in Valorum training",
+    description=descr,
     long_description=long_description,
 
     # The project"s main homepage.
@@ -44,7 +46,6 @@ setup(
         "Development Status :: 2 - Pre-Alpha",
 
         # Indicate who your project is intended for
-        "Intended Audience :: Economists",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",
         "Topic :: Database :: Front-Ends",
