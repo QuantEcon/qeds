@@ -48,10 +48,24 @@ class TestBLSData(unittest.TestCase):
         if not os.path.exists(files[0]):
             _gen_data()
 
-        for fn, nice, wide in zip(files, [False, True]*2, [0, 0, 1, 1]):
+        for fn, nice, wide in zip(files, [0, 1, 0, 1], [0, 0, 1, 1]):
             print(fn)
             want = pd.read_csv(fn, index_col=0, parse_dates=["Date"])
             have = self.b.get(
                 "LASST040000000000006", 1990, 1990, nice_names=nice, wide=wide
             )
             assert want.equals(have)
+
+            if not wide:
+                self.assertTrue(have.shape == (12, 3))
+                if nice:
+                    self.assertTrue(
+                        (have["variable"] == "Labor Force: Arizona (S)").all()
+                    )
+                else:
+                    self.assertTrue(
+                        (have["variable"] == "LASST040000000000006").all()
+                    )
+            else:
+                self.assertTrue(have.shape == (12, 1))
+                self.assertIsInstance(have.index, pd.DatetimeIndex)
