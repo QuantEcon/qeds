@@ -281,7 +281,8 @@ class _DictOptions(object):
 
     def __setitem__(self, key, val):
         section, name = self._get_sec_opt(key)
-        self.set_config(section, name, val)
+        if val is not None:
+            self.set_config(section, name, val)
 
     def __getitem__(self, key, default=None):
         section, name = self._get_sec_opt(key)
