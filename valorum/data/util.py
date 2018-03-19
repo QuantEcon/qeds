@@ -1,7 +1,13 @@
 import collections
 import datetime
+import os
 import random
 import pandas as pd
+
+
+def _ensure_dir(dirname):
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
 
 
 def _make_list(x):

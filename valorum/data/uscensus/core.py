@@ -6,7 +6,9 @@ import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
 from ..config import options
-from ..util import _make_list, QueryError
+from ..util import _make_list, QueryError, _ensure_dir
+
+_ensure_dir(options["uscensus.data_dir"])
 
 
 def _update_data_file():
