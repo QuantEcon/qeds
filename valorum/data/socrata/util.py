@@ -11,4 +11,3 @@ SOCRATA_STATUS_CODE_REASONS = {
     429: "You have made too many requests",
     500: "Server error"
 }
-

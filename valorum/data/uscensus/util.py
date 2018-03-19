@@ -70,7 +70,8 @@ def update_fips_2010():
     df.set_index(["State", "County"], inplace=True)
     df.index.name = "FIPS"
     df.sort_index(inplace=True)
-    df.to_csv(os.path.join(options["uscensus.data_dir"], "fips2010.csv"))
+    fn = os.path.join(options["uscensus.data_dir"], "fips2010.csv")
+    df.to_csv(fn)
     return df
 
 
@@ -96,7 +97,8 @@ def update_naics2002_to_sics():
     url = "https://www.census.gov/eos/www/naics/"
     url += "concordances/1987_SIC_to_2002_NAICS.xls"
     df = pd.read_excel(url, skip_footer=1)
-    df.to_csv(os.path.join(options["uscensus.data_dir"], "naics2002_to_sic.csv"))
+    fn = os.path.join(options["uscensus.data_dir"], "naics2002_to_sic.csv")
+    df.to_csv(fn)
     return df
 
 
@@ -125,7 +127,8 @@ def update_naics_crosswalk():
         usecols=[0, 2],
         names=["NAICS2007", "NAICS2002"],
     ))
-    df.to_csv(os.path.join(options["uscensus.data_dir"], "naics_crosswalk.csv"))
+    fn = os.path.join(options["uscensus.data_dir"], "naics_crosswalk.csv")
+    df.to_csv(fn)
     return df
 
 

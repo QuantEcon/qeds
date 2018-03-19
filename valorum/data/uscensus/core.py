@@ -190,13 +190,13 @@ class CensusData(object):
         try:
             js = r.json()
             df = pd.DataFrame(js[1:], columns=js[0])
-        except:
+        except:  # NOQA
             if "SIC" in kwargs or "SIC" in variables:
                 try:
                     df = pd.read_json(r.content.replace(b"\\", b""))
                     df.columns = df.iloc[0, :].tolist()
                     df.drop(0, axis=0, inplace=True)
-                except:
+                except:  # NOQA
                     msg = "Couldn't parse query result into DataFrame."
                     raise QueryError(msg, r)
             else:
@@ -284,9 +284,13 @@ class CountyBusinessPatterns(CensusData):
         ]
 
         if meta.shape[0] == 0:
-            years = _DATA[
-                _DATA["c_dataset"] == "cbp"
-            ]["temporal"].str.split("/").str.get(0).astype(int)
+            years = (
+                _DATA[_DATA["c_dataset"] == "cbp"]
+                ["temporal"]
+                .str.split("/")
+                .str.get(0)
+                .astype(int)
+            )
             min_year = years.min()
             max_year = years.max()
             m = f"Invalid year {year}. Must be in range {min_year}-{max_year}"
@@ -306,12 +310,16 @@ class ZipBusinessPatterns(CensusData):
         meta = _DATA[
             (_DATA["c_dataset"] == "zbp") &
             (_DATA["temporal"] == f"{self.year}/{self.year}")
-        ]
+            ]
 
         if meta.shape[0] == 0:
-            years = _DATA[
-                _DATA["c_dataset"] == "zbp"
-            ]["temporal"].str.split("/").str.get(0).astype(int)
+            years = (
+                _DATA[_DATA["c_dataset"] == "zbp"]
+                ["temporal"]
+                .str.split("/")
+                .str.get(0)
+                .astype(int)
+            )
             min_year = years.min()
             max_year = years.max()
             m = f"Invalid year {year}. Must be in range {min_year}-{max_year}"

@@ -120,14 +120,15 @@ class SocrataData(object):
             LOGGER.debug("Requesting data from {} with params {}".format(
                 req_url, lim_params
             ))
-            req_count = requests.get(req_url, headers=self.headers, params=lim_params)
+            req_count = requests.get(
+                req_url, headers=self.headers, params=lim_params
+            )
             limit = int(req_count.json()[0]["count"])
 
         # Add limit to params and request data
         SoQL["$limit"] = limit
-        LOGGER.debug("Requesting data from {} with params {}".format(
-            req_url, SoQL
-        ))
+        mystr = "Requesting data from {} with params {}"
+        LOGGER.debug(mystr.format(req_url, SoQL))
         records = requests.get(req_url, headers=self.headers, params=SoQL)
 
         # Raise error if not success

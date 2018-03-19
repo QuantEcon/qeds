@@ -35,4 +35,8 @@ def random_dates(startdate, enddate, N, format="%Y-%m-%d"):
     end = pd.to_datetime(enddate).to_pydatetime()
     delta = end - start
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
-    return [start + datetime.timedelta(seconds=random.randrange(int_delta)) for i in range(N)]
+
+    def rand_time():
+        return datetime.timedelta(seconds=random.randrange(int_delta))
+
+    return [start + rand_time() for i in range(N)]

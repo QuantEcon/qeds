@@ -119,7 +119,8 @@ class BLSData(object):
         # Chunk on years if user asked for more than 20 years
         if endyear - startyear > (nyear - 1):
             to_cat = []
-            for year_chunks in iter_chunks(range(startyear, endyear + 1), nyear):
+            years = range(startyear, endyear + 1)
+            for year_chunks in iter_chunks(years, nyear):
                 df = self.get(
                     series, year_chunks[0], year_chunks[-1], nice_names, wide
                 )
