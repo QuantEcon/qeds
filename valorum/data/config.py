@@ -313,12 +313,6 @@ def describe_options():
 # logging configuration #
 # --------------------- #
 
-logging.basicConfig(
-    format='%(levelname)s.%(name)s %(asctime)s: %(message)s',
-    level=options["options.log_level"]
-)
-
-
 def setup_logger(module):
     log = logging.getLogger(module)
     log.setLevel(options["options.log_level"])
