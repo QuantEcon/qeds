@@ -1,0 +1,11 @@
+# This file is a template, and might need editing before it works on your project.
+image: python:3.6
+
+before_script:
+  - python -V                                   # Print out python version for debugging
+  - pip install nose
+  - pip install -e .
+
+test:
+  script:
+  - nosetests -v -d .
