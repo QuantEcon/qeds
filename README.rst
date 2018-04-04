@@ -4,15 +4,6 @@ Valorum
 This package provides a simplified interface to datasets that we use
 frequently.
 
-As of now (1-1-18) this package is not registered on pypy. To install
-and use we recommend using the following steps from the command line:
-
-1. Clone or download this repository
-2. Change directory into the cloned repo
-3. Call ``pip install -e .``, where you can change the python the
-   package is installed into by providing the full path to the pip
-   executable
-
 Loading data
 ------------
 
