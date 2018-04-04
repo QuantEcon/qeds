@@ -4,6 +4,7 @@ Adapted from https://github.com/pypa/sampleproject/blob/master/setup.py
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+import re
 # To use a consistent encoding
 from codecs import open
 from os import path
@@ -16,13 +17,18 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 
 descr = "Python library for loading/cleaning data used in Valorum training"
 
+# get the version from the version.py file
+with open(path.join(here, "valorum", "version.py"), encoding="utf-8") as f:
+    contents = f.read()
+    version = re.match(r'__version__ = "(.+)"', contents).group(1)
+
 setup(
     name="valorum",
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.2.0",
+    version=version,
 
     description=descr,
     long_description=long_description,
