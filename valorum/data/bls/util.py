@@ -1,4 +1,4 @@
-import curses.ascii
+import string
 import warnings
 from ..config import _get_option
 
@@ -13,7 +13,7 @@ def validate_api_key(key):
         msg = "API key {} too short. Should be {} chars".formaT(key, API_KEY_LENGTH)
         raise ValueError(msg)
 
-    if not all(curses.ascii.isxdigit(i) for i in key):
+    if not all(i in string.hexdigits for i in key):
         msg = "API key {} contains invalid characters".format(key)
         raise ValueError(msg)
 
