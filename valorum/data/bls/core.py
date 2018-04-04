@@ -163,6 +163,14 @@ class BLSData(object):
             msg = "Request failed unexpectedly with code {}".format(res.status_code)
             raise QueryError(msg, res)
 
+        if data.get("status", "") == "REQUEST_NOT_PROCESSED":
+            msg = "Request was not processed"
+            if len(data.get("message", "")) > 0:
+                msg += ". Received message {}".format(data["message"])
+
+            raise QueryError(msg, res)
+
+
         # at this point we should have data
 
         dfs = []
