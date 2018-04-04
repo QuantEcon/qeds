@@ -75,11 +75,11 @@ _n_orders_per_row_dist = np.array([
 ])
 
 
-def simulate_orders(N=700_000, start_date="2014-01-01", end_date=None):
+def simulate_orders(N=700000, start_date="2014-01-01", end_date=None):
     """
     Parameters
     ----------
-    N: int, optional(default=700_000)
+    N: int, optional(default=700000)
         The target number of observations. The actual number of observations
         will be very close to this number
 
