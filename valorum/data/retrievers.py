@@ -200,21 +200,20 @@ def _get_airline_data(url):
 
 
 def _retrieve_airline_performance_dec16():
-    url = "https://s3.us-east-2.amazonaws.com/valorum-materials/"
-    url += "data/December2016_ontimeflights.csv.zip"
+    url = "https://storage.googleapis.com/workshop_materials/"
+    url += "December2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
 def _retrieve_airline_performance_nov16():
-    url = "https://s3.us-east-2.amazonaws.com/valorum-materials/"
-    url += "data/November2016_ontimeflights.csv.zip"
+    url = "https://storage.googleapis.com/workshop_materials/"
+    url += "November2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
 def _retrieve_airline_carrier_codes():
-    url = "https://s3.us-east-2.amazonaws.com/valorum-materials/data/"
-    url += "Carrier_Codes.csv"
-    return pd.read_csv(url).set_index("Code")
+    url = "https://storage.googleapis.com/workshop_materials/Carrier_Codes.csv"
+    return pd.read_csv(url).set_index("Code"), dict(index=["Code"])
 
 
 def _retrieve_nyc_employee():
