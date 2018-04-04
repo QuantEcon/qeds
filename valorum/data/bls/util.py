@@ -7,14 +7,14 @@ def validate_api_key(key):
     API_KEY_LENGTH = 32
     if len(key) > API_KEY_LENGTH:
         key = key[:API_KEY_LENGTH]
-        msg = f"API key too long, using first {API_KEY_LENGTH} characters"
+        msg = "API key too long, using first {} characters".format(API_KEY_LENGTH)
         warnings.warn(msg)
     elif len(key) < API_KEY_LENGTH:
-        msg = f"API key {key} too short. Should be {API_KEY_LENGTH} chars"
+        msg = "API key {} too short. Should be {} chars".formaT(key, API_KEY_LENGTH)
         raise ValueError(msg)
 
     if not all(curses.ascii.isxdigit(i) for i in key):
-        msg = f"API key {key} contains invalid characters"
+        msg = "API key {} contains invalid characters".format(key)
         raise ValueError(msg)
 
 

@@ -20,7 +20,7 @@ def _make_list(x):
     if isinstance(x, collections.Sequence):
         return list(x)
 
-    raise ValueError(f"Don't know how to make {x} a list")
+    raise ValueError("Don't know how to make {} a list".format(x))
 
 
 class QueryError(Exception):

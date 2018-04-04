@@ -54,7 +54,7 @@ class BLSData(object):
                 update_config = False
             else:
                 url = "https://data.bls.gov/registrationEngine/"
-                msg = f"BLS API key not detected. Please make one at {url}"
+                msg = "BLS API key not detected. Please make one at {}".format(url)
                 msg += " and call `valorum.options['bls.api_key']=key`"
                 raise EnvironmentError(msg)
 
@@ -156,11 +156,11 @@ class BLSData(object):
             # be errors later
             data = res.json()
         elif res.status_code in BLS_STATUS_CODE_REASONS:
-            msg = f"Request failed with code {res.status_code} and message "
+            msg = "Request failed with code {} and message ".format(res.status_code)
             msg += BLS_STATUS_CODE_REASONS(res.status_code)
             raise QueryError(msg, res)
         else:
-            msg = f"Request failed unexpectedly with code {res.status_code}"
+            msg = "Request failed unexpectedly with code {}".format(res.status_code)
             raise QueryError(msg, res)
 
         # at this point we should have data
@@ -186,7 +186,7 @@ class BLSData(object):
             elif freq == "Q":
                 df["Date"] = pd.to_datetime(df["year"] + df["period"].str[2])
             else:
-                msg = f"Unknown frequency {freq}. Please open an issue"
+                msg = "Unknown frequency {}. Please open an issue".format(freq)
                 raise ValueError(msg)
 
             df.drop(["year", "period"], axis=1, inplace=True)

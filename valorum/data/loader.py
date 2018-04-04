@@ -17,7 +17,7 @@ def load(name, kwargs={}):
 
     # Check whether the file exists
     if os.path.exists(fn):
-        LOGGER.debug(f"Loading data from {fn}")
+        LOGGER.debug("Loading data from {}".format(fn))
         # If it exists, read it in directly
         if EXTENSION == "csv":
             return pd.read_csv(fn, **kwargs)

@@ -38,13 +38,13 @@ _DATA_RAW, _DATA = _load_metadata()
 def query_predicate_string(name, arg):
     arg = _make_list(arg)
     if len(arg) > 0:
-        out = f"&{name}="
-        out += f"&{name}=".join(str(i) for i in arg)
+        out = "&{}=".format(name)
+        out += "&{}=".format(name).join(str(i) for i in arg)
         return out
     else:
         return ""
 
-    raise ValueError(f"Don't know how to handle query predicate arg {arg}")
+    raise ValueError("Don't know how to handle query predicate arg {}".format(arg))
 
 
 def geo_predicate_string(name, arg):
@@ -166,7 +166,7 @@ class CensusData(object):
 
         self.validate_vars(variables)
         var_string = ",".join(variables)
-        query = f"?get={var_string}&key={self.key}"
+        query = "?get={}&key={}".format(var_string, self.key)
 
         # all kwargs must also be valid varirables, except for state, us,
         # and county, which are handled separately
@@ -185,8 +185,8 @@ class CensusData(object):
 
         r = self.sess.get(self.url + self.dataset + query, timeout=timeout)
         if r.status_code != 200:
-            msg = f"Query failed with status code {r.status_code}. "
-            msg += f"Response from server was\n{r.content}"
+            msg = "Query failed with status code {}. ".format(r.status_code)
+            msg += "Response from server was\n{}".format(r.content)
             raise QueryError(msg, r)
 
         try:
@@ -202,8 +202,8 @@ class CensusData(object):
                     msg = "Couldn't parse query result into DataFrame."
                     raise QueryError(msg, r)
             else:
-                msg = f"Query failed with status code {r.status_code}. "
-                msg += f"Response from server was\n{r.content}"
+                msg = "Query failed with status code {}. ".format(r.status_code)
+                msg += "Response from server was\n{}".format(r.content)
                 raise QueryError(msg, r)
 
         key = ("metropolitan statistical area/"
@@ -244,7 +244,7 @@ class CensusData(object):
 
     def _variables_file_name(self):
         name = self.dataset.replace("/", "_")
-        return os.path.join(options["uscensus.data_dir"], f"{name}.json")
+        return os.path.join(options["uscensus.data_dir"], "{}.json".format(name))
 
     def _get_variables_file(self):
         fn = self._variables_file_name()
@@ -267,7 +267,7 @@ class CensusData(object):
         for var in variables:
             if var.upper() not in self.vars_df.columns:
                 varstring = textwrap.wrap(", ".join(self.vars_df.columns))
-                m = f"\nInvalid variable {var} requested. "
+                m = "\nInvalid variable {} requested. ".format(var)
                 m += "Possilble choices are:\n"
                 m += textwrap.indent("\n".join(varstring), "    ")
                 raise ValueError(m)
@@ -278,11 +278,11 @@ class CountyBusinessPatterns(CensusData):
     def __init__(self, year, url=None, key=None):
         super(CountyBusinessPatterns, self).__init__(url, key)
         self.year = year
-        self.dataset = f"{year}/cbp"
+        self.dataset = "{}/cbp".format(year)
 
         meta = _DATA[
             (_DATA["c_dataset"] == "cbp") &
-            (_DATA["temporal"] == f"{self.year}/{self.year}")
+            (_DATA["temporal"] == "{year}/{year}".format(year=self.year))
         ]
 
         if meta.shape[0] == 0:
@@ -295,7 +295,7 @@ class CountyBusinessPatterns(CensusData):
             )
             min_year = years.min()
             max_year = years.max()
-            m = f"Invalid year {year}. Must be in range {min_year}-{max_year}"
+            m = "Invalid year {}. Must be in range {}-{}".format(year, min_year, max_year)
             raise ValueError(m)
 
         self.meta = meta
@@ -307,11 +307,11 @@ class ZipBusinessPatterns(CensusData):
     def __init__(self, year, url=None, key=None):
         super(ZipBusinessPatterns, self).__init__(url, key)
         self.year = year
-        self.dataset = f"{year}/zbp"
+        self.dataset = "{}/zbp".format(year)
 
         meta = _DATA[
             (_DATA["c_dataset"] == "zbp") &
-            (_DATA["temporal"] == f"{self.year}/{self.year}")
+            (_DATA["temporal"] == "{year}/{year}".format(year=self.year))
             ]
 
         if meta.shape[0] == 0:
@@ -324,7 +324,7 @@ class ZipBusinessPatterns(CensusData):
             )
             min_year = years.min()
             max_year = years.max()
-            m = f"Invalid year {year}. Must be in range {min_year}-{max_year}"
+            m = "Invalid year {}. Must be in range {}-{}".format(year, min_year, max_year)
             raise ValueError(m)
 
         self.meta = meta

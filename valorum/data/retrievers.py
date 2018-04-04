@@ -85,10 +85,10 @@ def _retrieve_state_employment():
     for state_fips in states["FIPS"]:
         code = str(state_fips).zfill(2)
         codes = [
-            f"LASST{code}0000000000003",
-            f"LASST{code}0000000000006",
+            "LASST{}0000000000003".format(code),
+            "LASST{}0000000000006".format(code),
         ]
-        LOGGER.debug(f"Querying bls for {codes}")
+        LOGGER.debug("Querying bls for {}".format(codes))
         df = b.get(codes, startyear=2000, endyear=2017, nice_names=False)
         df["state"] = states.loc[states.FIPS == state_fips, "Name"].iloc[0]
         df.loc[df["variable"].str[-1] == "3", "variable"] = "UnemploymentRate"
@@ -108,25 +108,25 @@ def _retrieve_state_industry_employment():
     def get_codes(state_fips):
         code = str(state_fips).zfill(2)
         return {
-            # f"SMS{code}000000000000001": "total",
-            f"SMS{code}000001000000001": "mining and logging",
-            f"SMS{code}000002000000001": "construction",
-            f"SMS{code}000003000000001": "manufacturing",
-            f"SMS{code}000004000000001": "trade, transportation and utilities",
-            f"SMS{code}000005000000001": "information",
-            f"SMS{code}000005500000001": "financial activities",
-            f"SMS{code}000006000000001": "professional and business services",
-            f"SMS{code}000006561000001": "education",
-            f"SMS{code}000006562000001": "healthcare",
-            f"SMS{code}000007000000001": "leisure and hospitality",
-            f"SMS{code}000008000000001": "other services",
-            f"SMS{code}000009000000001": "government"
+            "SMS{}000000000000001".format(code): "total",
+            "SMS{}000001000000001".format(code): "mining and logging",
+            "SMS{}000002000000001".format(code): "construction",
+            "SMS{}000003000000001".format(code): "manufacturing",
+            "SMS{}000004000000001".format(code): "trade, transportation and utilities",
+            "SMS{}000005000000001".format(code): "information",
+            "SMS{}000005500000001".format(code): "financial activities",
+            "SMS{}000006000000001".format(code): "professional and business services",
+            "SMS{}000006561000001".format(code): "education",
+            "SMS{}000006562000001".format(code): "healthcare",
+            "SMS{}000007000000001".format(code): "leisure and hospitality",
+            "SMS{}000008000000001".format(code): "other services",
+            "SMS{}000009000000001".format(code): "government"
         }
 
     dfs = []
     for state_fips in states["FIPS"]:
         codes = get_codes(state_fips)
-        LOGGER.debug(f"Querying bls for {codes}")
+        LOGGER.debug("Querying bls for {}".format(codes))
         df = b.get(
             list(codes.keys()), startyear=2000, endyear=2017,
             nice_names=False
@@ -169,7 +169,7 @@ def _retrieve_goodreads_book_tags():
 
 
 def _get_airline_data(url):
-    LOGGER.debug(f"Downloading airline data from {url}")
+    LOGGER.debug("Downloading airline data from {}".format(url))
     df = pd.read_csv(url)
     df["Date"] = pd.to_datetime(df["FlightDate"])
     df.drop("FlightDate", axis=1, inplace=True)
@@ -177,12 +177,12 @@ def _get_airline_data(url):
     df.drop(bad_cols, axis=1, inplace=True)
 
     for col in ["CRSDepTime", "CRSArrTime"]:
-        LOGGER.debug(f"Converting column {col} to datetime")
+        LOGGER.debug("Converting column {} to datetime".format(col))
         dt_string = df["Date"].astype(str) + df[col].astype(str).str.zfill(4)
         df[col] = pd.to_datetime(dt_string, format="%Y-%m-%d%H%M")
 
     for col in ["DepTime", "ArrTime"]:
-        LOGGER.debug(f"Converting column {col} to datetime")
+        LOGGER.debug("Converting column {} to datetime".format(col))
         t_string = df[col].astype(str).str[:-2].str.zfill(4)
         dt_string = df["Date"].astype(str) + t_string
         df[col] = pd.to_datetime(dt_string, format="%Y-%m-%d%H%M",
