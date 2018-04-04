@@ -9,10 +9,10 @@ import logging
 import warnings
 
 # Get home directory and config file
-_home = pathlib.Path.home()
-_BASE_PATH = _home.joinpath(".valorum")
-CFG_FILE = _BASE_PATH.joinpath("config.ini")
-BASE_DATA_DIR = _BASE_PATH.joinpath("data")
+_home = str(pathlib.Path.home())
+_BASE_PATH = os.path.join(_home, ".valorum")
+CFG_FILE = os.path.join(_BASE_PATH, "config.ini")
+BASE_DATA_DIR = os.path.join(_BASE_PATH, "data")
 
 if not os.path.isdir(_BASE_PATH):
     os.mkdir(_BASE_PATH)
