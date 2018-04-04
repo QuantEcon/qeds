@@ -17,7 +17,7 @@ def _retrieve_test():
                        "B": [3, 4, 5],
                        "C": [6, 7, 8]})
 
-    return df
+    return df, dict(index=[])
 
 
 def _retrieve_state_fips():
@@ -73,7 +73,7 @@ def _retrieve_state_fips():
     54,WV,West Virginia
     56,WY,Wyoming
     """)
-    return pd.read_csv(src)
+    return pd.read_csv(src), dict(index=[])
 
 
 def _retrieve_state_employment():
@@ -97,7 +97,7 @@ def _retrieve_state_employment():
         df = df.unstack(level="variable")["value"]
         dfs.append(df)
 
-    return pd.concat(dfs).sort_index()
+    return pd.concat(dfs).sort_index(), dict(index=["Date", "state"])
 
 
 def _retrieve_state_industry_employment():
@@ -137,35 +137,35 @@ def _retrieve_state_industry_employment():
         df = df.unstack(level="variable")["value"]
         dfs.append(df)
 
-    return pd.concat(dfs).sort_index()
+    return pd.concat(dfs).sort_index(), dict(index=["Date", "state"])
 
 
 def _retrieve_goodreads_books():
     LOGGER.debug("Downloading goodreads books.csv from github")
     url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
     url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/books.csv"
-    return pd.read_csv(url)
+    return pd.read_csv(url), dict(index=[])
 
 
 def _retrieve_goodreads_ratings():
     LOGGER.debug("Downloading goodreads ratings.csv from github")
     url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
     url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/ratings.csv"
-    return pd.read_csv(url)
+    return pd.read_csv(url), dict(index=[])
 
 
 def _retrieve_goodreads_tags():
     LOGGER.debug("Downloading goodreads tags.csv from github")
     url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
     url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/tags.csv"
-    return pd.read_csv(url)
+    return pd.read_csv(url), dict(index=[])
 
 
 def _retrieve_goodreads_book_tags():
     LOGGER.debug("Downloading goodreads book_tags.csv from github")
     url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/"
     url += "c8a6e0a9a3b620c3f89301b0b3dc2a6653972294/book_tags.csv"
-    return pd.read_csv(url)
+    return pd.read_csv(url), dict(index=[])
 
 
 def _get_airline_data(url):
@@ -196,7 +196,7 @@ def _get_airline_data(url):
     ]
     df.loc[:, delays] = df.loc[:, delays].fillna(0.0)
 
-    return df
+    return df, dict(index=[])
 
 
 def _retrieve_airline_performance_dec16():
@@ -247,10 +247,10 @@ def _retrieve_nyc_employee():
                           .str.upper()  # Capitalize
                           .replace(pd.np.nan, ""))
 
-    return df
+    return df, dict(index=[])
 
 
 def _retrieve_chipotle_raw():
     url = "https://raw.githubusercontent.com/TheUpshot/"
     url += "chipotle/master/orders.tsv"
-    return pd.read_csv(url, sep="\t")
+    return pd.read_csv(url, sep="\t"), dict(index=[])

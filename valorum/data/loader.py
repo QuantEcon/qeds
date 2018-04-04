@@ -2,11 +2,35 @@
 This file provides the `data_read` function which reads data
 from a particular folder on the computer
 """
+import json
 import os
 import pandas as pd
 from .config import options, setup_logger
 
 LOGGER = setup_logger(__name__)
+
+_METADATA_FN = os.path.join(options["PATHS.data"], "metadata.json")
+if not os.path.isfile(_METADATA_FN):
+    with open(_METADATA_FN, "w") as f:
+        json.dump(dict(), f)
+
+
+def _update_metadata(name, metadata):
+    with open(_METADATA_FN, "r") as f:
+        current = json.load(f)
+
+    current[name] = metadata
+    with open(_METADATA_FN, "w") as f:
+        json.dump(current, f)
+
+    return current
+
+
+def _get_metadata(name):
+    with open(_METADATA_FN, "r") as f:
+        current = json.load(f)
+
+    return current.get(name, dict())
 
 
 def load(name, kwargs={}):
@@ -15,16 +39,28 @@ def load(name, kwargs={}):
     EXTENSION = options["options.file_format"]
     fn = os.path.join(options["PATHS.data"], name) + "." + EXTENSION
 
+    def _update_using_meta(df):
+        meta = _get_metadata(name)
+        if len(meta.get("index", dict())) > 0:
+            if EXTENSION in ["csv", "feather"]:
+                df.set_index(meta["index"], inplace=True)
+
+        return df
+
+
     # Check whether the file exists
     if os.path.exists(fn):
         LOGGER.debug("Loading data from {}".format(fn))
         # If it exists, read it in directly
         if EXTENSION == "csv":
-            return pd.read_csv(fn, **kwargs)
+            return _update_using_meta(pd.read_csv(fn, **kwargs))
         elif EXTENSION == "pkl":
-            return pd.read_pickle(fn, **kwargs)
+            return _update_using_meta(pd.read_pickle(fn, **kwargs))
         elif EXTENSION == "feather":
-            return pd.read_feather(fn, **kwargs)
+            return _update_using_meta(pd.read_feather(fn, **kwargs))
+
+        else:
+            raise ValueError("Unknown extension type {}".format(EXTENSION))
     else:
         return retrieve(name)
 
@@ -57,7 +93,8 @@ def retrieve(name, kwargs={}):
         raise ValueError(msg.format(name))
 
     # Call retrieval function
-    df = func()
+    df, metadata = func()
+    _update_metadata(name, metadata)
 
     # Save file
     EXTENSION = options["options.file_format"]
@@ -73,7 +110,7 @@ def retrieve(name, kwargs={}):
     elif EXTENSION == "pkl":
         df.to_pickle(fn, **kwargs)
     elif EXTENSION == "feather":
-        df.to_feather(fn, **kwargs)
+        df.reset_index().to_feather(fn, **kwargs)
 
     return df
 
