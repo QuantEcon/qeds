@@ -6,8 +6,11 @@ import json
 import os
 import pandas as pd
 from .config import options, setup_logger
+from .util import _ensure_dir
 
 LOGGER = setup_logger(__name__)
+
+_ensure_dir(options["PATHS.data"])
 
 _METADATA_FN = os.path.join(options["PATHS.data"], "metadata.json")
 if not os.path.isfile(_METADATA_FN):
@@ -46,7 +49,6 @@ def load(name, kwargs={}):
                 df.set_index(meta["index"], inplace=True)
 
         return df
-
 
     # Check whether the file exists
     if os.path.exists(fn):
