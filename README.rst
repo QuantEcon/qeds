@@ -1,5 +1,5 @@
-Valorum
-=======
+qeds
+====
 
 This package provides a simplified interface to datasets that we use
 frequently.
@@ -11,19 +11,19 @@ To see a list of available datasets run
 
 .. code:: python
 
-    import valorum
-    valorum.data.available()
+    import qeds
+    qeds.data.available()
 
 To load one of the listed datasets run
 
 .. code:: python
 
-    df = valorum.data.load("dataset_name")
+    df = qeds.data.load("dataset_name")
 
 where ``dataset_name`` is replaced by one of the names returned by
-``valorum.data.available()``.
+``qeds.data.available()``.
 
-When you first load a dataset, valorum will fetch the data from
+When you first load a dataset, qeds will fetch the data from
 somewhere online. It will then save a local copy of the data to your
 hard drive. Subsequent requests to load a dataset (even in different
 python sessions) will first attempt to load the data from your hard
@@ -32,15 +32,15 @@ drive and only fetch from online if necessary.
 Configuration
 -------------
 
-The valorum library is configurable. Below is a listing of available
+The qeds library is configurable. Below is a listing of available
 configuration options.
 
 To see a list of valid configuration options run
 
 .. code:: python
 
-    import valorum
-    valorum.data.config.describe_options()
+    import qeds
+    qeds.data.config.describe_options()
 
 To set a configuration use
 ``valourm.data.options[section.option] = value``.
@@ -50,8 +50,8 @@ call:
 
 .. code:: python
 
-    import valorum
-    valorum.data.options["bls.api_key"] = "MY_API_KEY"
+    import qeds
+    qeds.data.options["bls.api_key"] = "MY_API_KEY"
 
 Developer docs
 --------------

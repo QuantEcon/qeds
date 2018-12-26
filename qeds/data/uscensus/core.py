@@ -69,14 +69,14 @@ class CensusData(object):
                BLS registration key, then that value will be used
             2. Environment variable: if step 1 fails, we will attempt to use
                the value of the environment variable {key_env_name}.
-            3. Valorum conf: if that fails, we will attempt to look up the
-               value in section `bls.api_key` if your valorum conf file
+            3. qeds conf: if that fails, we will attempt to look up the
+               value in section `bls.api_key` if your qeds conf file
 
             If all three of those fail, we throw an error whose message
             contains instructions for how to obtain a registration key.
 
             If either step 2 or step 2 succeeds, we will store the api key
-            in the valorumm conf fil under `bls.api_key`. This means you
+            in the qedsm conf fil under `bls.api_key`. This means you
             should only need to supply a key once per machine.
         """.format(
             url=options["uscensus.api_url"],

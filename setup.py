@@ -15,15 +15,15 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
-descr = "Python library for loading/cleaning data used in Valorum training"
+descr = "Python library for loading/cleaning data used in qeds training"
 
 # get the version from the version.py file
-with open(path.join(here, "valorum", "version.py"), encoding="utf-8") as f:
+with open(path.join(here, "qeds", "version.py"), encoding="utf-8") as f:
     contents = f.read()
     version = re.match(r'__version__ = "(.+)"', contents).group(1)
 
 setup(
-    name="valorum",
+    name="qeds",
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -37,8 +37,8 @@ setup(
     # url="https://github.com/sglyon/uscensus",
 
     # Author details
-    author="Valorum Data",
-    author_email="admin@valorumdata.com",
+    author="qeds Data",
+    author_email="admin@qedsdata.com",
 
     # Choose your license
     license="BSD-3",

@@ -10,7 +10,7 @@ import warnings
 
 # Get home directory and config file
 _home = str(pathlib.Path.home())
-_BASE_PATH = os.path.join(_home, ".valorum")
+_BASE_PATH = os.path.join(_home, ".qeds")
 CFG_FILE = os.path.join(_BASE_PATH, "config.ini")
 BASE_DATA_DIR = os.path.join(_BASE_PATH, "data")
 
@@ -60,7 +60,7 @@ _valid_options = {
         Option(
             "base",
             str(_BASE_PATH),
-            "Default directory for all things valorum",
+            "Default directory for all things qeds",
             _no_validation
         ),
         Option(
@@ -73,7 +73,7 @@ _valid_options = {
     "options": [
         Option(
             "file_format",
-            "pkl",
+            "csv",
             "File format for saving loaded data",
             _member_validation(["pkl", "csv", "feather"])
         ),
@@ -299,7 +299,7 @@ options = _DictOptions()
 
 
 def describe_options():
-    msg = "Valorum configuration options are:\n\n"
+    msg = "qeds configuration options are:\n\n"
     for (sec, options) in _valid_options.items():
         msg += sec + "\n"
         for o in options:

@@ -1,12 +1,12 @@
 import unittest
-import valorum
+import qeds
 import pandas as pd
 
 
 class TestAllLoaders(unittest.TestCase):
 
     def test_load(self):
-        for ds in valorum.data.available():
+        for ds in qeds.data.available():
             if ds != "nyc_employee":
                 print("Trying", ds)
-                self.assertIsInstance(valorum.data.load(ds), pd.DataFrame)
+                self.assertIsInstance(qeds.data.load(ds), pd.DataFrame)

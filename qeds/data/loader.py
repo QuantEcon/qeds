@@ -77,7 +77,7 @@ def retrieve(name, kwargs={}):
     ----------
     name : string
         The name of the dataset that you want to retrieve from online. It
-        is saved at "$VALORUM/data/name.{file_ending}"
+        is saved at "$qeds/data/name.{file_ending}"
 
     Returns
     -------

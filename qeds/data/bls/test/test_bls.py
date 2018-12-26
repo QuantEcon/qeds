@@ -1,5 +1,5 @@
 """
-tests for valorum.data.bls
+tests for qeds.data.bls
 
 @author : Spencer Lyon
 @date : 2014-07-31
@@ -9,8 +9,8 @@ import os
 import unittest
 
 import pandas as pd
-import valorum
-from valorum.data import options
+import qeds
+from qeds.data import options
 
 
 DIR = os.path.join(options["PATHS.data"], "test")
@@ -20,7 +20,7 @@ if not os.path.exists(DIR):
 
 
 def _gen_data():
-    b = valorum.data.BLSData()
+    b = qeds.data.BLSData()
     df1 = b.get("LASST040000000000006", 1990, 1990, nice_names=0)
     df2 = b.get("LASST040000000000006", 1990, 1990, nice_names=1)
     df3 = b.get("LASST040000000000006", 1990, 1990, nice_names=0, wide=1)
@@ -36,7 +36,7 @@ class TestBLSData(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.b = valorum.data.BLSData()
+        cls.b = qeds.data.BLSData()
 
     def test_get_one_series(self):
         files = [

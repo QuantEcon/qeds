@@ -38,14 +38,14 @@ class SocrataData(object):
                Socrata app token, then that value will be used
             2. Environment variable: if step 1 fails, we will attempt to use
                the value of the environment variable {key_env_name}.
-            3. Valorum conf: if that fails, we will attempt to look up the
-               appropriate value in the Valorum configuration file
+            3. qeds conf: if that fails, we will attempt to look up the
+               appropriate value in the qeds configuration file
 
             If all three of those fail then we will revert to making public
             requests which may be throttled and thus be slower.
 
             If either step 1 or step 2 succeeds, we will store the api key
-            in the valorumm conf file under `socrata.api_key`. This means you
+            in the qedsm conf file under `socrata.api_key`. This means you
             should only need to supply a key once per machine.
         """.format(key_env_name=options["socrata.environment_variable"])
         # Check whether it is a valid datasource
@@ -72,7 +72,7 @@ class SocrataData(object):
                 url = "https://dev.socrata.com/register"
                 msg = "\nSocrata API key not detected"
                 msg += " please obtain one from {}".format(url)
-                msg += " and call `valorum.options['socrata.api_key']=key`"
+                msg += " and call `qeds.options['socrata.api_key']=key`"
                 msg += "\nFor now we will use no key. Socrata might limit"
                 msg += " our usage."
                 warnings.warn(msg)
