@@ -97,7 +97,9 @@ def _retrieve_state_employment():
         df = df.unstack(level="variable")["value"]
         dfs.append(df)
 
-    return pd.concat(dfs).sort_index(), dict(index=["Date", "state"])
+    meta = dict(index=["Date", "state"], parse_dates=["Date"])
+
+    return pd.concat(dfs).sort_index(), meta
 
 
 def _retrieve_state_industry_employment():
@@ -137,7 +139,9 @@ def _retrieve_state_industry_employment():
         df = df.unstack(level="variable")["value"]
         dfs.append(df)
 
-    return pd.concat(dfs).sort_index(), dict(index=["Date", "state"])
+    meta = dict(index=["Date", "state"], parse_dates=["Date"])
+
+    return pd.concat(dfs).sort_index(), meta
 
 
 def _retrieve_goodreads_books():
@@ -196,7 +200,12 @@ def _get_airline_data(url):
     ]
     df.loc[:, delays] = df.loc[:, delays].fillna(0.0)
 
-    return df, dict(index=[])
+    meta = dict(
+        index=[],
+        parse_dates=["Date", "CRSDepTime", "CRSArrTime", "DepTime", "ArrTime"]
+    )
+
+    return df, meta
 
 
 def _retrieve_airline_performance_dec16():
@@ -247,7 +256,7 @@ def _retrieve_nyc_employee():
                           .str.upper()  # Capitalize
                           .replace(pd.np.nan, ""))
 
-    return df, dict(index=[])
+    return df, dict(index=[], parse_dates=["agency_start_date"])
 
 
 def _retrieve_chipotle_raw():

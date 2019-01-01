@@ -44,6 +44,8 @@ def load(name, kwargs={}):
 
     def _update_using_meta(df):
         meta = _get_metadata(name)
+        for col in meta.get("parse_dates", []):
+            df[col] = pd.to_datetime(df[col])
         if len(meta.get("index", dict())) > 0:
             if EXTENSION in ["csv", "feather"]:
                 df.set_index(meta["index"], inplace=True)
