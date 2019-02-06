@@ -77,5 +77,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip"s
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["pandas", "requests", "quandl", "scipy", "matplotlib"],
+    install_requires=["pandas", "requests", "quandl", "scipy", "numpy", "quantecon",
+                      "matplotlib", "pyarrow", "feather-format", "openpyxl",
+                      "pandas_datareader", "scikit-learn", "seaborn", "statsmodels"],
 )
