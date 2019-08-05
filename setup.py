@@ -78,6 +78,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=["pandas", "requests", "quandl", "scipy", "numpy", "quantecon",
-                      "matplotlib", "pyarrow", "feather-format", "openpyxl",
-                      "pandas_datareader", "scikit-learn", "seaborn", "statsmodels"],
+                      "matplotlib", "pyarrow", "openpyxl", "plotly",
+                      "pandas_datareader", "scikit-learn", "seaborn",
+                      "statsmodels"],
 )

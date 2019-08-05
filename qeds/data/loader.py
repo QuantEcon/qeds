@@ -35,6 +35,12 @@ def _get_metadata(name):
 
     return current.get(name, dict())
 
+def _remove_old_index(df):
+    if "Unnamed: 0" in df.columns:
+        df.drop("Unnamed: 0", axis=1, inplace=True)
+
+    return df
+
 
 def load(name, kwargs={}):
     # Create the file name that corresponds to where this file
@@ -57,14 +63,16 @@ def load(name, kwargs={}):
         LOGGER.debug("Loading data from {}".format(fn))
         # If it exists, read it in directly
         if EXTENSION == "csv":
-            return _update_using_meta(pd.read_csv(fn, **kwargs))
+            out = _update_using_meta(pd.read_csv(fn, **kwargs))
         elif EXTENSION == "pkl":
-            return _update_using_meta(pd.read_pickle(fn, **kwargs))
+            out = _update_using_meta(pd.read_pickle(fn, **kwargs))
         elif EXTENSION == "feather":
-            return _update_using_meta(pd.read_feather(fn, **kwargs))
+            out = _update_using_meta(pd.read_feather(fn, **kwargs))
 
         else:
             raise ValueError("Unknown extension type {}".format(EXTENSION))
+
+        return _remove_old_index(out)
     else:
         return retrieve(name)
 
