@@ -34,6 +34,7 @@ setup(
     long_description=long_description,
 
     # The project"s main homepage.
+    url="https://github.com/QuantEcon/qeds",
     # url="https://github.com/sglyon/uscensus",
 
     # Author details
