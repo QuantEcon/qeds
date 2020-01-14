@@ -209,19 +209,19 @@ def _get_airline_data(url):
 
 
 def _retrieve_airline_performance_dec16():
-    url = "https://storage.googleapis.com/qeds/data/"
+    url = "https://datascience.quantecon.org/assets/data/"
     url += "December2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
 def _retrieve_airline_performance_nov16():
-    url = "https://storage.googleapis.com/qeds/data/"
+    url = "https://datascience.quantecon.org/assets/data/"
     url += "November2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
 def _retrieve_airline_carrier_codes():
-    url = "https://storage.googleapis.com/qeds/data/Carrier_Codes.csv"
+    url = "https://datascience.quantecon.org/assets/data/Carrier_Codes.csv"
     return pd.read_csv(url).set_index("Code"), dict(index=["Code"])
 
 
