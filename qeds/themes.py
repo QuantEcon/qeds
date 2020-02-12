@@ -47,8 +47,8 @@ def mpl_style():
     rcp['axes.labelcolor'] = TEXT_COLOR
     rcp['axes.titlesize'] = 'x-large'
     rcp['axes.labelsize'] = 'large'
-
-    plt.style.library["qeds"] = mpl_style()
+    
+    plt.style.library["qeds"] = rcp
     plt.style.reload_library()
     plt.style.use("qeds")
 
