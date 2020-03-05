@@ -59,7 +59,7 @@ def plotly_template():
     import plotly.graph_objects as go
     import plotly.io as pio
 
-    template = go.Layout.Template(
+    template = go.layout.Template(
         {
             'data': {
                 'bar': [
