@@ -10,7 +10,7 @@ from .bls import BLSData
 from .socrata import SocrataData
 
 LOGGER = setup_logger(__name__)
-BASE_DATA_URL = "https://raw.githubusercontent.com/quantecon/qeds/data"
+BASE_DATA_URL = "https://raw.githubusercontent.com/quantecon/qeds/data/"
 
 def _retrieve_test():
     df = pd.DataFrame({"A": [0, 1, 2],
