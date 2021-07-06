@@ -10,7 +10,7 @@ from .bls import BLSData
 from .socrata import SocrataData
 
 LOGGER = setup_logger(__name__)
-
+BASE_DATA_URL = "https://raw.githubusercontent.com/quantecon/qeds/data"
 
 def _retrieve_test():
     df = pd.DataFrame({"A": [0, 1, 2],
@@ -209,19 +209,17 @@ def _get_airline_data(url):
 
 
 def _retrieve_airline_performance_dec16():
-    url = "https://datascience.quantecon.org/assets/data/"
-    url += "December2016_ontimeflights.csv.zip"
+    url = BASE_DATA_URL + "December2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
 def _retrieve_airline_performance_nov16():
-    url = "https://datascience.quantecon.org/assets/data/"
-    url += "November2016_ontimeflights.csv.zip"
+    url = BASE_DATA_URL + "November2016_ontimeflights.csv.zip"
     return _get_airline_data(url)
 
 
 def _retrieve_airline_carrier_codes():
-    url = "https://datascience.quantecon.org/assets/data/Carrier_Codes.csv"
+    url = BASE_DATA_URL + "Carrier_Codes.csv"
     return pd.read_csv(url).set_index("Code"), dict(index=["Code"])
 
 
